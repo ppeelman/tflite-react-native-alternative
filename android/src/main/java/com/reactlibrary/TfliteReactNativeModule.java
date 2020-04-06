@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Canvas;
 import android.util.Base64;
+import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -22,6 +23,20 @@ import com.facebook.react.bridge.WritableMap;
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.Tensor;
+
+//import org.bytedeco.javacpp.opencv_objdetect;
+
+//import org.bytedeco.javacpp.*;
+//import org.bytedeco.javacpp.indexer.*;
+
+//import static org.bytedeco.javacpp.opencv_core.*;
+//import static org.bytedeco.javacpp.opencv_highgui.*;
+//import static org.bytedeco.javacpp.opencv_imgproc.*;
+//import static org.bytedeco.javacpp.opencv_imgcodecs.*;
+
+//import org.opencv.core.*;
+//import org.opencv.core.imgproc.*;
+//import org.opencv.core.imgcodecs.*;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -130,26 +145,49 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
     return results;
   }
 
+
+  private WritableArray GetEmbedding() {
+    WritableArray results = Arguments.createArray();
+    for (int i = 0; i < labels.size(); ++i) {
+      float confidence = labelProb[0][i];
+      WritableMap res = Arguments.createMap();
+      res.putInt("index", i);
+      res.putDouble("value", confidence);
+      results.pushMap(res);
+    }
+
+    Log.d("TfLite-Lib", "" + results.size());
+    Log.d("TfLite-Lib", "" + results.toString());
+
+    return results;
+  }
   ByteBuffer feedInputTensorImage(String path, float mean, float std) throws IOException {
     Tensor tensor = tfLite.getInputTensor(0);
     inputSize = tensor.shape()[1];
     int inputChannels = tensor.shape()[3];
 
+//    Mat imMat = imread(path.replace("file://", ""));
+//    Mat resizeimage = new Mat();
+//    Size scaleSize = new Size(inputSize, inputSize);
+//    resize(imMat, resizeimage, scaleSize , 0, 0, INTER_LINEAR);
+
     InputStream inputStream = new FileInputStream(path.replace("file://", ""));
     Bitmap bitmapRaw = BitmapFactory.decodeStream(inputStream);
-
-    Matrix matrix = getTransformationMatrix(bitmapRaw.getWidth(), bitmapRaw.getHeight(),
-        inputSize, inputSize, false);
-
+//
+//    Matrix matrix = getTransformationMatrix(bitmapRaw.getWidth(), bitmapRaw.getHeight(),
+//        inputSize, inputSize, false);
+//
     int[] intValues = new int[inputSize * inputSize];
     int bytePerChannel = tensor.dataType() == DataType.UINT8 ? 1 : BYTES_PER_CHANNEL;
     ByteBuffer imgData = ByteBuffer.allocateDirect(1 * inputSize * inputSize * inputChannels * bytePerChannel);
     imgData.order(ByteOrder.nativeOrder());
 
-    Bitmap bitmap = Bitmap.createBitmap(inputSize, inputSize, Bitmap.Config.ARGB_8888);
-    final Canvas canvas = new Canvas(bitmap);
-    canvas.drawBitmap(bitmapRaw, matrix, null);
+//    Bitmap bitmap = Bitmap.createBitmap(inputSize, inputSize, Bitmap.Config.ARGB_8888);
+//    final Canvas canvas = new Canvas(bitmap);
+//    canvas.drawBitmap(bitmRaw, matrix, null);
+    Bitmap bitmap = Bitmap.createScaledBitmap(bitmapRaw, inputSize, inputSize, true);
     bitmap.getPixels(intValues, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+
 
     int pixel = 0;
     for (int i = 0; i < inputSize; ++i) {
@@ -167,8 +205,25 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
       }
     }
 
+    //Convert cv mat to ByteBuffer
+//    UByteIndexer idx = imMat.createIndexer();
+//    imgData.rewind();
+//    int pixel = 0;
+//    for (int i = 0; i < inputSize; ++i) {
+//      for (int j = 0; j < inputSize; ++j) {
+//        imgData.putFloat((float)idx.get(i,j));
+//      }
+//    }
     return imgData;
   }
+
+  @ReactMethod
+  private void runIdOnImage(final String path, final float mean, final float std, final int numResults,
+                               final float threshold, final Callback callback) throws IOException {
+
+    tfLite.run(feedInputTensorImage(path, mean, std), labelProb);
+
+    callback.invoke(null, GetEmbedding()); }
 
   @ReactMethod
   private void runModelOnImage(final String path, final float mean, final float std, final int numResults,
@@ -176,8 +231,8 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
 
     tfLite.run(feedInputTensorImage(path, mean, std), labelProb);
 
-    callback.invoke(null, GetTopN(numResults, threshold));
-  }
+    callback.invoke(null, GetTopN(numResults, threshold)); }
+
 
   @ReactMethod
   private void detectObjectOnImage(final String path, final String model, final float mean, final float std,

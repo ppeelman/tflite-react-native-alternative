@@ -25,6 +25,18 @@ class Tflite {
       });
   }
 
+  runIdOnImage(args, callback) {
+    TfliteReactNative.runModelOnImage(
+      args['path'],
+      args['imageMean'] != null ? args['imageMean'] : 127.5,
+      args['imageStd'] != null ? args['imageStd'] : 127.5,
+      args['numResults'] || 5,
+      args['threshold'] != null ? args['threshold'] : 0.1,
+      (error, response) => {
+        callback && callback(error, response);
+      });
+  }
+
   detectObjectOnImage(args, callback) {
     TfliteReactNative.detectObjectOnImage(
       args['path'],
