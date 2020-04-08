@@ -249,6 +249,4 @@ tflite.runPoseNetOnImage({
 tflite.close();
 ```
 
-## Example
 
-Refer to the [example](https://github.com/shaqian/tflite-react-native/tree/master/example).
