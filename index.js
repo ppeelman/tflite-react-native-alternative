@@ -26,7 +26,7 @@ class Tflite {
   }
 
   runIdOnImage(args, callback) {
-    TfliteReactNative.runModelOnImage(
+    TfliteReactNative.runIdOnImage(
       args['path'],
       args['imageMean'] != null ? args['imageMean'] : 127.5,
       args['imageStd'] != null ? args['imageStd'] : 127.5,
