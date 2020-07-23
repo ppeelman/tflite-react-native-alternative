@@ -242,7 +242,7 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
     ByteBuffer imgData = feedInputTensorImage(path, mean, std);
 
     if (model.equals("SSDMobileNet")) {
-      int NUM_DETECTIONS = 100;
+      int NUM_DETECTIONS = 10;
       float[][][] outputLocations = new float[1][NUM_DETECTIONS][4];
       float[][] outputClasses = new float[1][NUM_DETECTIONS];
       float[][] outputScores = new float[1][NUM_DETECTIONS];
