@@ -1,5 +1,5 @@
 
-# tflite-react-native-alternative
+# tflite-react-native
 
 A React Native library for accessing TensorFlow Lite API. Supports Classification, Object Detection, Deeplab and PoseNet on both iOS and Android.
 
@@ -17,7 +17,44 @@ A React Native library for accessing TensorFlow Lite API. Supports Classificatio
 
 ## Installation
 
-`$ npm install tflite-react-native-alternative --save`
+`$ npm install tflite-react-native --save`
+
+Since version 0.60 of React Native, native modules are _autolinked_. So you don't need to do `react-native link tflite-react-native` anymore.
+
+### iOS
+
+Native dependencies are now managed with cocoapods. So, Make sure you have cocoapods:
+```sh
+pod --version
+```
+If not, install-it:
+```sh
+[sudo] gem install cocoapods
+```
+
+Then, you can install the dependencies:
+
+```sh
+cd ios
+pod install
+```
+
+### Android
+
+React native 0.60 uses AndroidX. And the java part of this module is not (yet) converted to AndroidX. So in order to make it work, you should use [jetify](https://github.com/mikehardy/jetifier).
+
+At the root folder of your react-native project:
+```sh
+npm install --save-dev jetifier
+npx jetify
+```
+Also, any time your dependencies update you have to jetify again. So like it's advised on Jetify website, you could add this in the `scripts` section of your _package.json_:
+```json
+{
+  "postinstall": "npx jetify",
+  ...
+}
+```
 
 ## Add models to the project
 
@@ -132,7 +169,7 @@ tflite.detectObjectOnImage({
 });
 ```
 
-- Output fomart:
+- Output format:
 
 `x, y, w, h` are between [0, 1]. You can scale `x, w` by the width and `y, h` by the height of the image.
 
@@ -249,4 +286,26 @@ tflite.runPoseNetOnImage({
 tflite.close();
 ```
 
+## Example
 
+Refer to the [example](https://github.com/shaqian/tflite-react-native/tree/master/example).
+
+In order to try the example by yourself, you can do:
+```sh
+git clone https://github.com/shaqian/tflite-react-native.git
+cd tflite-react-native/example
+npm install
+```
+
+**For iOS**, install the dependencies:
+```sh
+cd ios
+pod install
+```
+Then open the example.xcworkspace file with Xcode, and click the _play_ button.
+
+**For Android**, just do:
+```sh
+npx jetify
+react-native run-android
+```

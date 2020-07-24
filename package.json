@@ -1,7 +1,7 @@
 {
-  "name": "tflite-react-native-alternative",
-  "version": "1.0.2",
-  "description": "Updated version of tflite-react-native for personal use.",
+  "name": "tflite-react-native",
+  "version": "0.0.6",
+  "description": "A react native library for accessing TensorFlow Lite API. Supports Classification and Object Detection on both iOS and Android.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -13,14 +13,14 @@
     "classification",
     "object detection"
   ],
-  "author": "Leonam de Paula",
+  "author": "Qian Sha",
+  "homepage": "https://github.com/shaqian/tflite-react-native#readme",
   "license": "MIT",
   "peerDependencies": {
-    "react-native": "^0.41.2"
+    "react-native": "^0.60.5"
   },
-  "repository" :
-  {
+  "repository" : {
     "type" : "git",
-    "url" : "https://github.com/leonamjlpaula/tflite-react-native-alternative.git"
+    "url" : "https://github.com/shaqian/tflite-react-native.git"
   }
 }
