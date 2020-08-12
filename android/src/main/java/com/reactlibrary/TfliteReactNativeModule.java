@@ -284,7 +284,7 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
 
 
       String detectedClass = "wheat";
-      if(outputScores[0][i] > 0.325) {
+      if(outputScores[0][i] < 0.325) {
         continue;
       }
 
