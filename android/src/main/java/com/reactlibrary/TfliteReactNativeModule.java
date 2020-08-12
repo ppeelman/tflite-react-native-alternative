@@ -277,6 +277,7 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
 
     for (int i = 0; i < numDetections; ++i) {
 //      String detectedClass = labels.get((int) outputClasses[0][i] + 1);
+      System.out.println(outputClasses[0][i]);
       String detectedClass = "wheat";
 
       if (counters.get(detectedClass) == null) {
