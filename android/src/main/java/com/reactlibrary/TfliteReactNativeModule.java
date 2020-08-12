@@ -275,14 +275,21 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
     Map<String, Integer> counters = new HashMap<>();
     WritableArray results = Arguments.createArray();
 
+    System.out.println("labels: " + labels);
+
     for (int i = 0; i < numDetections; ++i) {
-//    String detectedClass = labels.get((int) outputClasses[0][i] + 1);
+      System.out.println("=======================================");
+
+      String labelIdx = (int) outputClasses[0][i] + 1;
+      System.out.println("labelIdx: " + labelIdx);
 
 
       String detectedClass = "wheat";
       if(outputScores[0][i] > 0.325) {
         continue;
       }
+
+
 
       System.out.println("output class: " + outputClasses[0][i] + ", score: " + outputScores[0][i]);
       float temp = outputScores[0][i];
