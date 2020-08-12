@@ -280,6 +280,10 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
       System.out.println(outputClasses[0][i]);
       String detectedClass = "wheat";
 
+      if(outputClasses[0][i] < 0.01) {
+        continue;
+      }
+
       if (counters.get(detectedClass) == null) {
         counters.put(detectedClass, 1);
       } else {
