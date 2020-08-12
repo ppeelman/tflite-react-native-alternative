@@ -313,7 +313,7 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
       float ymax = outputLocations[0][i][2];
       float xmax = outputLocations[0][i][3];
       float width = Math.min(1 - xmin, xmax - xmin);
-      float height = Math.min(1 - ymin, ymax - ymin));
+      float height = Math.min(1 - ymin, ymax - ymin);
 
       rect.putDouble("x", xmin);
       rect.putDouble("y", ymin);
