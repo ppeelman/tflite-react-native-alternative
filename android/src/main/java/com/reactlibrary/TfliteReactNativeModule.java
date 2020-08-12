@@ -275,22 +275,7 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
     Map<String, Integer> counters = new HashMap<>();
     WritableArray results = Arguments.createArray();
 
-    System.out.println("labels: " + labels);
-
     for (int i = 0; i < numDetections; ++i) {
-      System.out.println("=======================================");
-
-      System.out.println("labelIdx: " + ((int) outputClasses[0][i] + 1));
-
-      System.out.println("output class: " + outputClasses[0][i] + ", score: " + outputScores[0][i]);
-      float temp = outputScores[0][i];
-      if(temp == 0f) {
-        System.out.println("score was zero");
-      } else {
-        System.out.println("ratio class/score: " + outputClasses[0][i] / outputScores[0][i]);
-      }
-
-
       String detectedClass = "wheat";
       if(outputScores[0][i] < 0.325) {
         continue;
@@ -323,9 +308,6 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
       if(xmin <= 0f || ymin <= 0f || width <= 0f || height <= 0f) {
         continue;
       }
-
-      System.out.println("x: " + xmin + ", y: " + ymin);
-      System.out.println("w: " + Math.min(1 - xmin, xmax - xmin) + ", h: " + Math.min(1 - ymin, ymax - ymin));
 
       WritableMap result = Arguments.createMap();
       result.putMap("rect", rect);
