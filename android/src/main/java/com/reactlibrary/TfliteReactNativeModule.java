@@ -282,14 +282,6 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
 
       System.out.println("labelIdx: " + ((int) outputClasses[0][i] + 1));
 
-
-      String detectedClass = "wheat";
-      if(outputScores[0][i] < 0.325) {
-        continue;
-      }
-
-
-
       System.out.println("output class: " + outputClasses[0][i] + ", score: " + outputScores[0][i]);
       float temp = outputScores[0][i];
       if(temp == 0f) {
@@ -298,6 +290,11 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
         System.out.println("ratio class/score: " + outputClasses[0][i] / outputScores[0][i]);
       }
 
+
+      String detectedClass = "wheat";
+      if(outputScores[0][i] < 0.325) {
+        continue;
+      }
 
       if (counters.get(detectedClass) == null) {
         counters.put(detectedClass, 1);
@@ -315,10 +312,17 @@ public class TfliteReactNativeModule extends ReactContextBaseJavaModule {
       float xmin = Math.max(0, outputLocations[0][i][1]);
       float ymax = outputLocations[0][i][2];
       float xmax = outputLocations[0][i][3];
+      float width = Math.min(1 - xmin, xmax - xmin);
+      float height = Math.min(1 - ymin, ymax - ymin));
+
       rect.putDouble("x", xmin);
       rect.putDouble("y", ymin);
-      rect.putDouble("w", Math.min(1 - xmin, xmax - xmin));
-      rect.putDouble("h", Math.min(1 - ymin, ymax - ymin));
+      rect.putDouble("w", width);
+      rect.putDouble("h", height);
+
+      if(xmin <= 0f || ymin <= 0f || width <= 0f || height <= 0f) {
+        continue;
+      }
 
       System.out.println("x: " + xmin + ", y: " + ymin);
       System.out.println("w: " + Math.min(1 - xmin, xmax - xmin) + ", h: " + Math.min(1 - ymin, ymax - ymin));
